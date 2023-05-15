@@ -1,6 +1,6 @@
 # Import the dependencies.
 import numpy as np
-
+# import datetime as dt
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
@@ -89,20 +89,32 @@ def tobs():
 def start(start):
     """Return JSON list of min, avg, and max temperature from a specified start date."""
 
-    t_results = session.query(func.min(measurement.tobs), func.max(measurement.tobs),func.avg(measurement.tobs))\
-    .filter(measurement.date >= start).all()
-    
-    return jsonify(t_results)
+    min_result = session.query(func.min(measurement.tobs))\
+    .filter(measurement.date >= start).first()
+    max_result = session.query(func.max(measurement.tobs))\
+    .filter(measurement.date >= start).first()
+    avg_result = session.query(func.avg(measurement.tobs))\
+    .filter(measurement.date >= start).first()
+
+    results_dict = {"min": min_result,"max":max_result,"avg":avg_result}
+
+    return jsonify(results_dict)
 
 
 @app.route("/api/v1.0/<start>/<end>", methods = ['GET'])
 def start_end(start,end):
     """Return JSON list of min, avg, and max temperature for a specified range of dates."""
 
-    se_results = session.query(func.min(measurement.tobs), func.max(measurement.tobs), func.avg(measurement.tobs))\
-    .filter((measurement.date.between(start,end))).all()
+    min_se_results = session.query(func.min(measurement.tobs))\
+    .filter((measurement.date.between(start,end))).first()
+    max_se_results = session.query(func.max(measurement.tobs))\
+    .filter((measurement.date.between(start,end))).first()
+    avg_se_results = session.query(func.avg(measurement.tobs))\
+    .filter((measurement.date.between(start,end))).first()
 
-    return jsonify(se_results)
+    se_results_dict = {"min": min_se_results,"max": max_se_results, "avg":avg_se_results}
+
+    return jsonify(se_results_dict)
 
 
 if __name__ == '__main__':
