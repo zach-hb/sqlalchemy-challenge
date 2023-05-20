@@ -90,14 +90,14 @@ def start(start):
     """Return JSON list of min, avg, and max temperature from a specified start date."""
 
     min_result = session.query(func.min(measurement.tobs))\
-    .filter(measurement.date >= start).first()
+    .filter(measurement.date >= start).first()[0]
     max_result = session.query(func.max(measurement.tobs))\
-    .filter(measurement.date >= start).first()
+    .filter(measurement.date >= start).first()[0]
     avg_result = session.query(func.avg(measurement.tobs))\
-    .filter(measurement.date >= start).first()
+    .filter(measurement.date >= start).first()[0]
 
     results_dict = {"min": min_result,"max":max_result,"avg":avg_result}
-
+    
     return jsonify(results_dict)
 
 
@@ -106,11 +106,11 @@ def start_end(start,end):
     """Return JSON list of min, avg, and max temperature for a specified range of dates."""
 
     min_se_results = session.query(func.min(measurement.tobs))\
-    .filter((measurement.date.between(start,end))).first()
+    .filter((measurement.date.between(start,end))).first()[0]
     max_se_results = session.query(func.max(measurement.tobs))\
-    .filter((measurement.date.between(start,end))).first()
+    .filter((measurement.date.between(start,end))).first()[0]
     avg_se_results = session.query(func.avg(measurement.tobs))\
-    .filter((measurement.date.between(start,end))).first()
+    .filter((measurement.date.between(start,end))).first()[0]
 
     se_results_dict = {"min": min_se_results,"max": max_se_results, "avg":avg_se_results}
 
